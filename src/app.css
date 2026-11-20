@@ -1,0 +1,99 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f7f7f5;
+  --fg: #1b1d21;
+  --muted: #5d6270;
+  --line: #d9dbe0;
+  --accent: #3b5bdb;
+  --font: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111317;
+    --fg: #e8e9ec;
+    --muted: #9aa0ad;
+    --line: #2a2e36;
+    --accent: #8ea4ff;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.6 var(--font);
+}
+
+main {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 3rem 1rem 4rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+}
+
+p {
+  margin: 0;
+}
+
+.lede {
+  margin-top: 0.5rem;
+  color: var(--muted);
+}
+
+.steps {
+  list-style: none;
+  margin: 2.5rem 0;
+  padding: 0;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.steps li {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 0.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.steps p {
+  color: var(--muted);
+}
+
+.num {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.note {
+  font-size: 0.95rem;
+}
+
+.status {
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
