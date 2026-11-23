@@ -63,10 +63,16 @@
     </div>
   {/if}
 
-  <details>
-    <summary>Which files were read</summary>
-    <p class="muted">{saved.result.filesRead.join(', ')}. Nothing else in the zip was opened.</p>
-  </details>
+  {#if saved.result.format === 'pdf'}
+    <p class="notice">
+      This came from your profile PDF, which leaves out projects, volunteering, courses, recommendations and all but your top {profile.skills.length} skills. Import your data export when it arrives. Your changes carry over wherever the facts match.
+    </p>
+  {:else}
+    <details>
+      <summary>Which files were read</summary>
+      <p class="muted">{saved.result.filesRead.join(', ')}. Nothing else in the zip was opened.</p>
+    </details>
+  {/if}
 </section>
 
 <p class="intro">
@@ -207,7 +213,7 @@
 {/if}
 
 <section class="actions">
-  <button onclick={onreimport}>Import a newer export</button>
+  <button onclick={onreimport}>{saved.result.format === 'pdf' ? 'Import your data export' : 'Import a newer export'}</button>
   <button class="danger" onclick={onforget}>Remove my data from this browser</button>
 </section>
 

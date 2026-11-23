@@ -7,7 +7,9 @@ import { IdMaker } from '../ids'
 import type { Evidence, Profile, Website } from '../profile'
 import { cell, normaliseHeader, toRows, type Row } from './csv'
 import { parseDate, type YearMonth } from './dates'
-import { splitPoints } from './points'
+import { educationId, looksLikeEmail, pointsFor, positionId, typedEmail, type EmailChoice } from './shared'
+
+export { looksLikeEmail, type EmailChoice }
 
 // The only files ever unpacked. An export also holds private messages,
 // connections, phone numbers and payment receipts. None of that belongs on a
@@ -48,11 +50,6 @@ export class ExportError extends Error {
   override name = 'ExportError'
 }
 
-// Where the CV's contact email comes from. Some people keep an old or work
-// address as their LinkedIn primary, so they can type the one they want
-// instead. When they do, the export's email file is not opened at all.
-export type EmailChoice = { from: 'export' } | { from: 'user'; value: string }
-
 export interface ImportOptions {
   email?: EmailChoice
 }
@@ -63,13 +60,10 @@ export interface ImportResult {
   emailFrom: 'export' | 'user' | null
   // Plain sentences the review screen can show as they are.
   warnings: string[]
-  filesRead: ProfileFile[]
-}
-
-// Deliberately loose. It is there to catch a typo like a missing @, not to
-// decide what counts as a valid address.
-export function looksLikeEmail(value: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
+  filesRead: string[]
+  // Set when the profile came from the "Save to PDF" file rather than the
+  // data export. The PDF holds much less, and the review screen says so.
+  format?: 'pdf'
 }
 
 function baseName(path: string): string {
@@ -176,8 +170,7 @@ export function readLinkedInExport(zip: Uint8Array, options: ImportOptions = {})
   }
 
   const ids = new IdMaker()
-  const points = (parentId: string, source: ProfileFile, text: string): Evidence[] =>
-    splitPoints(text).map((t) => ({ id: ids.child(parentId, t), source, text: t }))
+  const points = (parentId: string, source: ProfileFile, text: string): Evidence[] => pointsFor(ids, parentId, source, text)
 
   // Profile.csv also carries birth date, postal address, postcode and maiden
   // name. They are deliberately not read. A CV does not need them and the
@@ -187,10 +180,7 @@ export function readLinkedInExport(zip: Uint8Array, options: ImportOptions = {})
 
   let email = ''
   if (emailChoice.from === 'user') {
-    email = emailChoice.value.trim()
-    if (email && !looksLikeEmail(email)) {
-      warnings.push(`"${email}" does not look like an email address. Check it before using it on a CV.`)
-    }
+    email = typedEmail(emailChoice.value, warnings)
   } else {
     const emails = table('Email Addresses.csv', ['Email Address'])
     const primary =
@@ -217,7 +207,7 @@ export function readLinkedInExport(zip: Uint8Array, options: ImportOptions = {})
       if (!company && !title) return []
       const started = cell(r, 'Started On', 'Start Date')
       const finished = cell(r, 'Finished On', 'End Date')
-      const id = ids.make('position', company, title, started)
+      const id = positionId(ids, company, title, started)
       return [
         {
           id,
@@ -239,7 +229,7 @@ export function readLinkedInExport(zip: Uint8Array, options: ImportOptions = {})
       if (!school) return []
       const degree = cell(r, 'Degree Name')
       const started = cell(r, 'Start Date', 'Started On')
-      const id = ids.make('education', school, degree, started)
+      const id = educationId(ids, school, degree, started)
       return [
         {
           id,

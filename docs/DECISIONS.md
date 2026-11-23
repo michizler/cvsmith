@@ -91,3 +91,15 @@ README sections about installing, running, licensing or contributing are skipped
 Work in someone else's repo can be added by name. It is only accepted if GitHub lists the user as a contributor, and the commit count is recorded as a GitHub fact. Membership of an organisation is not enough. Private repos cannot be seen at all.
 
 The per-repo language breakdown is not fetched. It costs one lookup per repo, and for notebook projects it mostly repeats "Jupyter Notebook".
+
+## 10. The profile PDF is a quick start
+
+*November 2026*
+
+LinkedIn's "Save to PDF" is instant, while the data export can take a while to arrive. So the PDF is accepted as a way to get started. It holds much less than the export. There are no projects, volunteering, courses or recommendations, only the top three skills and a few certificates. The review screen says so and suggests importing the export later.
+
+The PDF is not merged with the export. Importing the export replaces it. Both importers build evidence ids the same way, with dates parsed first so "April 2022" and "Apr 2022" agree, so changes made after a PDF import carry over wherever the fact is the same. On a real profile 56 of 57 job bullets matched. Education and certificates match less well, because the PDF writes them differently.
+
+The PDF has no labels, only layout, so each line's role comes from its font size and position compared with the others. Only PDFs saved in English are read, since the section headings are matched by name. Anything else gets a clear message pointing to the export. The phone number in the PDF's contact block is never read, the same as with the export.
+
+pdfjs reads the file. It is loaded only when someone picks a PDF, so people using the export never download it. Font loading and XFA forms are switched off, since the file is untrusted and only its text is needed.

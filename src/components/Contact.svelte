@@ -37,7 +37,13 @@
   ]
 
   const emailNote = $derived(
-    current.emailFrom === 'export' ? 'From your LinkedIn export' : current.emailFrom === 'user' ? 'Typed by you' : '',
+    current.emailFrom === 'export'
+      ? saved.result.format === 'pdf'
+        ? 'From your LinkedIn profile PDF'
+        : 'From your LinkedIn export'
+      : current.emailFrom === 'user'
+        ? 'Typed by you'
+        : '',
   )
 </script>
 
@@ -54,7 +60,7 @@
         onchange={(e) => set(f.key, e.currentTarget.value)}
       />
       {#if f.key === 'email' && emailNote}<small class="muted">{emailNote}</small>{/if}
-      {#if f.key === 'phone'}<small class="muted">Never read from your export. Only what you type here.</small>{/if}
+      {#if f.key === 'phone'}<small class="muted">Never read from LinkedIn. Only what you type here.</small>{/if}
     </label>
   {/each}
 </div>

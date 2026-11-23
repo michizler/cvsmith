@@ -1,6 +1,7 @@
 <!-- Picks the LinkedIn export zip and the contact email choice, then imports. -->
 <script lang="ts">
-  import { ExportError, looksLikeEmail, readLinkedInExport, type ImportResult } from '../lib/linkedin/import'
+  import { ExportError, looksLikeEmail, type ImportResult } from '../lib/linkedin/import'
+  import { readLinkedInFile } from '../lib/linkedin/read'
 
   interface Props {
     // True when a profile is already loaded and this would replace it.
@@ -32,7 +33,7 @@
     try {
       const bytes = new Uint8Array(await file.arrayBuffer())
       const email = emailMode === 'user' ? { from: 'user' as const, value: emailValue } : { from: 'export' as const }
-      onimport(readLinkedInExport(bytes, { email }))
+      onimport(await readLinkedInFile(bytes, { email }))
     } catch (e) {
       // ExportError messages are written for the user. Anything else is our
       // bug, and the raw message would not help them.
@@ -69,13 +70,13 @@
       choose(e.dataTransfer?.files)
     }}
   >
-    <input type="file" accept=".zip,application/zip" onchange={(e) => choose(e.currentTarget.files)} />
+    <input type="file" accept=".zip,.pdf,application/zip,application/pdf" onchange={(e) => choose(e.currentTarget.files)} />
     {#if file}
       <strong>{file.name}</strong>
       <span class="muted">Choose a different file</span>
     {:else}
-      <strong>Drop your LinkedIn data export here</strong>
-      <span class="muted">or click to choose the zip file</span>
+      <strong>Drop your LinkedIn data export or profile PDF here</strong>
+      <span class="muted">or click to choose the file</span>
     {/if}
   </label>
 
@@ -87,6 +88,9 @@
         <li>Choose Get a copy of your data and request the archive. Asking for particular data rather than everything is quicker.</li>
         <li>LinkedIn emails you when it is ready. Download the zip and bring it here without unzipping it.</li>
       </ol>
+      <p class="muted">
+        In a hurry? Open your LinkedIn profile, select More, then Save to PDF. The PDF is instant but leaves out projects, volunteering and most of your skills. You can start with it and import the export later without losing your changes.
+      </p>
     </details>
   {/if}
 
@@ -130,7 +134,7 @@
   </div>
 
   <p class="hint">
-    The file is read in this browser. Only your profile files are opened. Your messages, connections and phone numbers are left untouched, and nothing is uploaded anywhere.
+    The file is read in this browser. From a data export, only your profile files are opened. Your messages, connections and phone numbers are left untouched, and nothing is uploaded anywhere.
   </p>
 </form>
 
