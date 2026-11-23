@@ -8,7 +8,7 @@ It is free and open source. It has no server, so your profile, your job ads and 
 
 ## Status
 
-Early. The app skeleton is in place. Profile import is the next piece of work. See [docs/DECISIONS.md](docs/DECISIONS.md) for how it is being built and why.
+Early. You can import your LinkedIn data export and your public GitHub repos, then check, hide, reword and split what was found. Reading the LinkedIn profile PDF comes next. See [docs/DECISIONS.md](docs/DECISIONS.md) for how it is being built and why.
 
 ## The one rule
 
